@@ -85,3 +85,19 @@ class UseCaseTest(unittest.TestCase):
         b.connect_to(a)
 
         self.assertEqual(6, a.amount)
+
+    def test_arbitrary_use_case(self):
+        a = Container()
+        b = Container()
+        c = Container()
+
+        a.add_water(2)
+        b.add_water(4)
+        a.connect_to(b)
+        c.add_water(6)
+        b.add_water(6)
+        c.connect_to(a)
+
+        self.assertEqual(6, a.amount)
+        self.assertEqual(6, b.amount)
+        self.assertEqual(6, c.amount)
