@@ -1,36 +1,34 @@
 import unittest
 from dataclasses import dataclass
-from typing import Set
 
 
 class Container:
     @dataclass
     class _Group:
-        amount_per_container: float
-        containers: Set["Container"]
+        amount: float = 0.0
+        container_count: int = 1
 
     def __init__(self):
-        self._group = Container._Group(amount_per_container=0.0, containers={self})
+        self._group = Container._Group()
 
     def add_water(self, amount: float):
-        new_amount_per_container = self._group.amount_per_container + amount / len(self._group.containers)
+        new_amount = self._group.amount + amount
 
-        if new_amount_per_container < 0:
-            raise RuntimeError("Insufficient amount of water in the containers")
+        if new_amount < 0:
+            raise RuntimeError("Insufficient water")
 
-        self._group.amount_per_container = new_amount_per_container
+        self._group.amount = new_amount
 
     def connect_to(self, other: "Container"):
-        amount_in_group = self._group.amount_per_container * len(self._group.containers)
-        for container_in_group in other._group.containers:
-            self._group.containers.add(container_in_group)
-            other._group = self._group
-
-        self._group.amount_per_container = amount_in_group / len(self._group.containers)
+        if self is other:
+            return
+        self._group.amount += other._group.amount
+        self._group.container_count += other._group.container_count
+        other._group = self._group
 
     @property
-    def amount(self):
-        return self._group.amount_per_container
+    def amount(self) -> float:
+        return self._group.amount / self._group.container_count
 
 
 class UseCaseTest(unittest.TestCase):
