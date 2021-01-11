@@ -79,3 +79,20 @@ class UseCaseTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             a.add_water(-13)
+
+    def test_connect_to_myself(self):
+        a = Container()
+        a.add_water(12)
+        a.connect_to(a)
+
+        self.assertEqual(12, a.amount)
+
+    def test_bidirectional_connection(self):
+        a = Container()
+        b = Container()
+
+        a.add_water(12)
+        a.connect_to(b)
+        b.connect_to(a)
+
+        self.assertEqual(6, a.amount)
